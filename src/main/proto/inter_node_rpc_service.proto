@@ -1,0 +1,226 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.amazon.opendistro.elasticsearch.performanceanalyzer.grpc";
+option java_outer_classname = "PANetworking";
+
+import "google/protobuf/descriptor.proto";
+
+package com.amazon.opendistro.elasticsearch.performanceanalyzer.grpc;
+
+service InterNodeRpcService {
+    // Sends a flowunit to whoever is interested in it.
+    rpc Publish (stream FlowUnitMessage) returns (PublishResponse) {
+    }
+
+    // Sends a subscription request to a node for a particular metric.
+    rpc Subscribe (SubscribeMessage) returns (SubscribeResponse) {
+    }
+
+    // get Metrics for a particular node
+    rpc GetMetrics(MetricsRequest) returns (MetricsResponse) {}
+}
+
+/*
+ Structure that describes the subscription message.
+*/
+message SubscribeMessage {
+    string requester_graph_node = 1;
+    string destination_graph_node = 2;
+    map<string, string> tags = 3;
+}
+
+message SubscribeResponse {
+    enum SubscriptionStatus {
+        SUCCESS = 0;
+        TAG_MISMATCH = 1;
+    }
+    SubscriptionStatus subscription_status = 1;
+}
+
+/*
+ ResourceContext that comes along with ResourceFlowUnit
+*/
+message ResourceContextMessage {
+    int32 state = 1;
+}
+
+/*
+  Enum for different resource type
+*/
+message AdditionalFields {
+  string name = 1;
+  string description = 2;
+}
+
+extend google.protobuf.EnumValueOptions {
+  AdditionalFields additional_fields = 50000;
+}
+
+enum ResourceEnum {
+  // JVM
+  OLD_GEN = 0 [(additional_fields).name = "old gen"];
+  YOUNG_GEN = 1 [(additional_fields).name = "young gen"];
+
+  // hardware
+  CPU = 2 [(additional_fields).name = "cpu usage"];
+  IO = 3 [(additional_fields).name = "IO"];
+
+  // threadpool
+  WRITE_THREADPOOL = 4 [(additional_fields).name = "write threadpool"];
+  SEARCH_THREADPOOL = 5 [(additional_fields).name = "search threadpool"];
+
+  // Cache
+  FIELD_DATA_CACHE = 10 [(additional_fields).name = "field data cache"];
+  SHARD_REQUEST_CACHE = 11 [(additional_fields).name = "shard request cache"];
+  NODE_QUERY_CACHE = 12 [(additional_fields).name = "node query cache"];
+
+  // Heap
+  HEAP = 20 [(additional_fields).name = "heap"];
+}
+
+enum MetricEnum {
+  // JVM
+  HEAP_USAGE = 0 [(additional_fields).name = "heap usage", (additional_fields).description = "memory usage in percentage"];
+  PROMOTION_RATE = 1 [(additional_fields).name = "promotion rate", (additional_fields).description = "mb/s"];
+  MINOR_GC = 2 [(additional_fields).name = "minor gc", (additional_fields).description = "minor gc pause time in ms"];
+
+  // hardware
+  CPU_USAGE = 3 [(additional_fields).name = "cpu usage", (additional_fields).description = "num of cores"];
+  TOTAL_THROUGHPUT = 4 [(additional_fields).name = "total throughput", (additional_fields).description = "number of bytes read/written per second"];
+  TOTAL_SYS_CALLRATE = 5 [(additional_fields).name = "total sys callrate", (additional_fields).description = "read and write system calls per second"];
+
+  // threadpool
+  QUEUE_REJECTION = 6 [(additional_fields).name = "queue rejection", (additional_fields).description = "rejection period in second"];
+  QUEUE_CAPACITY = 7 [(additional_fields).name = "queue capacity", (additional_fields).description = "max capacity of the queue"];
+  
+  // cache
+  CACHE_EVICTION = 10 [(additional_fields).name = "cache eviction", (additional_fields).description = "cache eviction count"];
+  CACHE_HIT = 11 [(additional_fields).name = "cache hit", (additional_fields).description = "cache hit count"];
+  CACHE_MAX_SIZE = 12 [(additional_fields).name = "cache max size", (additional_fields).description = "max cache size in bytes"];
+
+  // Heap
+  HEAP_MAX = 16 [(additional_fields).name = "heap max", (additional_fields).description = "max heap size in bytes"];
+
+  // JVM Contd.
+  OLD_GEN_USAGE_AFTER_FULL_GC = 31 [(additional_fields).name = "full gc", (additional_fields).description = "old gen usage after full gc in mb"];
+  // GC
+  FULL_GC = 32 [(additional_fields).name = "full gc", (additional_fields).description = "full gc pause time in ms"];
+}
+
+/*
+  message for resource type Enum
+*/
+message Resource {
+    ResourceEnum resource_enum = 1;
+    MetricEnum metric_enum = 2;
+}
+
+/*
+ message wrappers for different types of RCA summary
+*/
+message TopConsumerSummaryList {
+    repeated TopConsumerSummaryMessage consumer = 1;
+}
+message HotResourceSummaryList {
+    repeated HotResourceSummaryMessage hotResourceSummary = 1;
+}
+message HotShardSummaryList {
+    repeated HotShardSummaryMessage hotShardSummary = 1;
+}
+message HotNodeSummaryList {
+    repeated HotNodeSummaryMessage hotNodeSummary = 1;
+}
+message TopConsumerSummaryMessage {
+    string name = 1;
+    double value = 2;
+}
+message HotResourceSummaryMessage {
+    Resource resource = 1;
+    TopConsumerSummaryList consumers = 2;
+    double threshold = 3;
+    double value = 4;
+    double avgValue = 5;
+    double minValue = 6;
+    double maxValue = 7;
+    int32 timePeriod = 8;
+    string metaData = 9;
+}
+message HotShardSummaryMessage {
+    string indexName = 1;
+    string shardId = 2;
+    string nodeId = 3;
+    double cpu_utilization = 4;
+    double cpu_utilization_threshold = 5;
+    double io_throughput = 6;
+    double io_throughput_threshold = 7;
+    double io_sys_callrate = 8;
+    double io_sys_callrate_threshold = 9;
+    int32 timePeriod = 10;
+}
+message HotNodeSummaryMessage {
+    string nodeID = 1;
+    string hostAddress = 2;
+    HotResourceSummaryList hotResourceSummaryList = 3;
+    HotShardSummaryList hotShardSummaryList = 4;
+}
+message HotClusterSummaryMessage {
+    int32 nodeCount = 1;
+    HotNodeSummaryList hotNodeSummaryList = 2;
+}
+
+message ResourceTemperatureMessage {
+    string resourceName = 1;
+    // The mean usage is the mean over all shards. There is also a shard independent component
+    // that is accounted for in the hte totalUsage
+    int32 meanUsage = 2;
+    int32 numberOfShards = 3;
+    double totalUsage = 4;
+}
+
+message NodeTemperatureSummaryMessage {
+    string nodeID = 1;
+    string hostAddress = 2;
+    repeated ResourceTemperatureMessage cpuTemperature = 3;
+}
+
+/*
+ gRPC message wrapper for ResourceFlowUnit
+*/
+message FlowUnitMessage {
+    string graphNode = 1;
+    string esNode = 2;
+    uint64 timeStamp = 3;
+    ResourceContextMessage resourceContext = 4;
+    oneof summary_oneof {
+        HotResourceSummaryMessage hotResourceSummary = 5;
+        HotShardSummaryMessage hotShardSummary = 6;
+        HotNodeSummaryMessage hotNodeSummary = 7;
+        NodeTemperatureSummaryMessage nodeTemperatureSummary = 8;
+        HotClusterSummaryMessage hotClusterSummary = 9;
+    }
+}
+
+message PublishResponse {
+    enum PublishResponseStatus {
+        SUCCESS = 0;
+        NODE_SHUTDOWN = 1;
+    }
+    PublishResponseStatus data_status = 1;
+}
+
+/*
+ Request Parameters for GetMetrics API
+*/
+message MetricsRequest {
+    repeated string metric_list = 1;
+    repeated string agg_list = 2;
+    repeated string dim_list = 3;
+}
+
+/*
+ GetMetrics function returns string as a response
+*/
+message MetricsResponse {
+    string metrics_result = 1;
+}
