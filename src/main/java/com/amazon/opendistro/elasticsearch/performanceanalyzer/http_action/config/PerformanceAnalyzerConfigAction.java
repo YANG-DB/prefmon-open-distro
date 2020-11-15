@@ -63,7 +63,7 @@ public class PerformanceAnalyzerConfigAction extends BaseRestHandler {
     public PerformanceAnalyzerConfigAction(final Settings settings,
                                            final RestController controller,
                                            final PerformanceAnalyzerController performanceAnalyzerController) {
-        super(settings);
+//        super(settings);//FIX - todo verify changes in E/S 7.4.2
         this.performanceAnalyzerController = performanceAnalyzerController;
         registerHandlers(controller);
         LOG.info("PerformanceAnalyzer Enabled: {}", performanceAnalyzerController::isPerformanceAnalyzerEnabled);

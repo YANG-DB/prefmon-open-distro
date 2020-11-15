@@ -35,16 +35,17 @@ public class ClusterDetailsEventProcessorTestHelper extends AbstractReaderTests 
   }
 
   public void addNodeDetails(String nodeId, String address, boolean isMasterNode) {
-    nodeDetails.add(createNodeDetailsMetrics(nodeId, address, isMasterNode));
+    nodeDetails.add(createNodeDetailsMetrics(nodeId, address));
   }
 
   public void addNodeDetails(String nodeId, String address, NodeRole nodeRole, boolean isMasterNode) {
-    nodeDetails.add(createNodeDetailsMetrics(nodeId, address, nodeRole, isMasterNode));
+    nodeDetails.add(createNodeDetailsMetrics(nodeId, address));
   }
 
   public static ClusterDetailsEventProcessor.NodeDetails newNodeDetails(final String nodeId, final String address,
                                                                         final boolean isMasterNode) {
-    return createNodeDetails(nodeId, address, isMasterNode);
+//    return createNodeDetails(nodeId, address, isMasterNode);
+    return newNodeDetails(nodeId, address, isMasterNode);
   }
 
   public ClusterDetailsEventProcessor generateClusterDetailsEvent() {

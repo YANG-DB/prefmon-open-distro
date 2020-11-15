@@ -60,7 +60,7 @@ public class PerformanceAnalyzerResourceProvider extends BaseRestHandler {
 
   @Inject
   public PerformanceAnalyzerResourceProvider(Settings settings, RestController controller) {
-    super(settings);
+//    super(settings);//FIX - todo verify changes in E/S 7.4.2
     controller.registerHandler(org.elasticsearch.rest.RestRequest.Method.GET, AGENT_PATH + "{redirectEndpoint}", this);
     PluginSettings pluginSettings = PluginSettings.instance();
     portNumber = pluginSettings.getSettingValue("webservice-listener-port", DEFAULT_PORT_NUMBER);

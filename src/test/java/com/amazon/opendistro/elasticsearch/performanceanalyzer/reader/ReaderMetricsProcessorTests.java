@@ -602,12 +602,12 @@ public class ReaderMetricsProcessorTests extends AbstractReaderTests {
     long ts1 = currTime - 1 * 60 * 1000;
     long ts2 = currTime - 2 * 60 * 1000;
     long ts3 = currTime - (PluginSettings.instance().getBatchMetricsRetentionPeriodMinutes() + 1) * 60 * 1000;
-    for (Long ts: List.of(ts1, ts2, ts3)) {
+    for (Long ts: Arrays.asList(ts1, ts2, ts3)) {
       new MetricsDB(ts).remove();
     }
     ReaderMetricsProcessor mp = new ReaderMetricsProcessor(rootLocation, true, new AppContext());
     NavigableSet<Long> restored = mp.getBatchMetrics();
-    assertTrue(restored.containsAll(List.of(ts1, ts2)) && restored.size() == 2);
+    assertTrue(restored.containsAll(Arrays.asList(ts1, ts2)) && restored.size() == 2);
     try {
       MetricsDB.fetchExisting(ts3);
       fail();
@@ -628,12 +628,12 @@ public class ReaderMetricsProcessorTests extends AbstractReaderTests {
     long ts1 = currTime - 1 * 60 * 1000;
     long ts2 = currTime - 2 * 60 * 1000;
     long ts3 = currTime - (PluginSettings.instance().getBatchMetricsRetentionPeriodMinutes() + 1) * 60 * 1000;
-    for (Long ts: List.of(ts1, ts2, ts3)) {
+    for (Long ts: Arrays.asList(ts1, ts2, ts3)) {
       new MetricsDB(ts).remove();
     }
     ReaderMetricsProcessor mp = new ReaderMetricsProcessor(rootLocation, true, new AppContext());
     NavigableSet<Long> restored = mp.getBatchMetrics();
-    assertTrue(restored.containsAll(List.of(ts1, ts2)) && restored.size() == 2);
+    assertTrue(restored.containsAll(Arrays.asList(ts1, ts2)) && restored.size() == 2);
     try {
       MetricsDB.fetchExisting(ts3).remove();
     } catch (Exception e) {
@@ -654,7 +654,7 @@ public class ReaderMetricsProcessorTests extends AbstractReaderTests {
     long ts1 = currTime - 1 * 60 * 1000;
     long ts2 = currTime - 2 * 60 * 1000;
     long ts3 = currTime - (PluginSettings.instance().getBatchMetricsRetentionPeriodMinutes() + 1) * 60 * 1000;
-    for (Long ts: List.of(ts1, ts2, ts3)) {
+    for (Long ts: Arrays.asList(ts1, ts2, ts3)) {
       new MetricsDB(ts).remove();
     }
     ReaderMetricsProcessor mp = new ReaderMetricsProcessor(rootLocation, true, new AppContext());
@@ -662,7 +662,7 @@ public class ReaderMetricsProcessorTests extends AbstractReaderTests {
     mp.readBatchMetricsEnabledFromConfShim();
     NavigableSet<Long> restored = mp.getBatchMetrics();
     assertTrue(restored.isEmpty());
-    for (Long ts: List.of(ts1, ts2, ts3)) {
+    for (Long ts: Arrays.asList(ts1, ts2, ts3)) {
       try {
         MetricsDB.fetchExisting(ts3);
         fail();
@@ -684,7 +684,7 @@ public class ReaderMetricsProcessorTests extends AbstractReaderTests {
     long ts1 = currTime - 1 * 60 * 1000;
     long ts2 = currTime - 2 * 60 * 1000;
     long ts3 = currTime - (PluginSettings.instance().getBatchMetricsRetentionPeriodMinutes() + 1) * 60 * 1000;
-    for (Long ts: List.of(ts1, ts2, ts3)) {
+    for (Long ts: Arrays.asList(ts1, ts2, ts3)) {
       new MetricsDB(ts).remove();
     }
     ReaderMetricsProcessor mp = new ReaderMetricsProcessor(rootLocation, true, new AppContext());
@@ -693,7 +693,7 @@ public class ReaderMetricsProcessorTests extends AbstractReaderTests {
     NavigableSet<Long> restored = mp.getBatchMetrics();
     assertTrue(restored.isEmpty());
     try {
-      for (Long ts: List.of(ts1, ts2, ts3)) {
+      for (Long ts: Arrays.asList(ts1, ts2, ts3)) {
         MetricsDB.fetchExisting(ts3).remove();
       }
     } catch (Exception e) {

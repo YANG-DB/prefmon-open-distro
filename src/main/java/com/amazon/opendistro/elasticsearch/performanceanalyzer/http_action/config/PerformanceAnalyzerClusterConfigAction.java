@@ -41,7 +41,7 @@ public class PerformanceAnalyzerClusterConfigAction extends BaseRestHandler {
     public PerformanceAnalyzerClusterConfigAction(final Settings settings, final RestController restController,
                                                   final PerformanceAnalyzerClusterSettingHandler clusterSettingHandler,
                                                   final NodeStatsSettingHandler nodeStatsSettingHandler) {
-        super(settings);
+//        super(settings);//FIX - todo verify changes in E/S 7.4.2
         this.clusterSettingHandler = clusterSettingHandler;
         this.nodeStatsSettingHandler = nodeStatsSettingHandler;
         registerHandlers(restController);

@@ -28,11 +28,11 @@ public class RcaItInMemoryAppender extends AbstractAppender {
 
 
   public RcaItInMemoryAppender() {
-    super(NAME, null, null, true, Property.EMPTY_ARRAY);
+    super(NAME, null, null, true);
   }
 
-  private RcaItInMemoryAppender(final String name, final Layout<?> layout, final Property[] properties) {
-    super(name, null, layout, true, properties);
+  private RcaItInMemoryAppender(final String name, final Layout<?> layout) {
+    super(name, null, layout, true);
   }
 
 
@@ -42,7 +42,7 @@ public class RcaItInMemoryAppender extends AbstractAppender {
   @PluginFactory
   public static RcaItInMemoryAppender createAppender(@PluginAttribute("name") final String name,
                                                      @PluginElement("Layout") Layout layout) {
-    self = new RcaItInMemoryAppender(Objects.requireNonNull(name), layout, Property.EMPTY_ARRAY);
+    self = new RcaItInMemoryAppender(Objects.requireNonNull(name), layout);
     return self;
   }
 

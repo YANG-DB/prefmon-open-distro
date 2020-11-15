@@ -18,13 +18,16 @@ package com.amazon.opendistro.elasticsearch.performanceanalyzer.http_action.whoa
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ClusterAdminClient;
 import org.elasticsearch.client.ElasticsearchClient;
+import org.elasticsearch.common.io.stream.StreamInput;
+
+import java.io.IOException;
 
 public class WhoAmIRequestBuilder extends ActionRequestBuilder<WhoAmIRequest, WhoAmIResponse> {
-    public WhoAmIRequestBuilder(final ClusterAdminClient client) {
+    public WhoAmIRequestBuilder(final ClusterAdminClient client) throws IOException {
         this(client, WhoAmIAction.INSTANCE);
     }
 
-    public WhoAmIRequestBuilder(final ElasticsearchClient client, final WhoAmIAction action) {
-        super(client, action, new WhoAmIRequest());
+    public WhoAmIRequestBuilder(final ElasticsearchClient client, final WhoAmIAction action) throws IOException {
+        super(client, action, new WhoAmIRequest(StreamInput.wrap("whoami".getBytes())));
     }
 }

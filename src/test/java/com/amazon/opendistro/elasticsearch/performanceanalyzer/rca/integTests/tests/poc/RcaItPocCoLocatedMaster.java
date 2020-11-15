@@ -60,7 +60,7 @@ public class RcaItPocCoLocatedMaster {
       what = AExpect.Type.REST_API,
       on = HostTag.ELECTED_MASTER,
       validator = PocValidator.class,
-      forRca = SimpleAnalysisGraphForCoLocated.ClusterRca.class)
+      forRca = RcaItPocSingleNode.SimpleAnalysisGraphForCoLocated.ClusterRca.class)
   public void simple() {
   }
 

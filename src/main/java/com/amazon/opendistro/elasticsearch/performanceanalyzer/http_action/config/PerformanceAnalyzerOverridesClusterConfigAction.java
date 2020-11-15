@@ -53,7 +53,7 @@ public class PerformanceAnalyzerOverridesClusterConfigAction extends BaseRestHan
             final Settings settings, final RestController restController,
             final ConfigOverridesClusterSettingHandler configOverridesClusterSettingHandler,
             final ConfigOverridesWrapper overridesWrapper) {
-        super(settings);
+//        super(settings);//FIX - todo verify changes in E/S 7.4.2
         this.configOverridesClusterSettingHandler = configOverridesClusterSettingHandler;
         this.overridesWrapper = overridesWrapper;
         registerHandlers(restController);
