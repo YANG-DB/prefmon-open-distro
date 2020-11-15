@@ -1,2 +1,2 @@
 # prefmon-open-distro
-Performance Monito over E/S based on AWS opendistro
+Performance monitor API over E/S (based on AWS opendistro)
